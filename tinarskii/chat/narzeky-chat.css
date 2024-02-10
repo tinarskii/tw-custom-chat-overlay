@@ -1,8 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai+Looped&family=Outfit&display=swap');
 
+html {
+    padding: .5em;
+    margin: 0;
+    max-width: 500px;
+}
+
 #log {
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
     row-gap: 1em;
 }
 
@@ -67,6 +73,11 @@
     font-size: 1.5em;
     font-weight: 700;
     text-shadow: 0 0 10px rgba(0, 0, 0, 0.75);
+}
+
+.badges img, .message img {
+    width: 24px;
+    height: 24px;
 }
 
 .message {
