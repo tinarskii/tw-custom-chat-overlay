@@ -1,0 +1,6 @@
+.env
+tinarskii/bot/.env
+.env.development
+
+node_modules/
+*.db

@@ -16,44 +16,30 @@ html {
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
+    padding: .75em;
+    border-radius: 0 0 1em;
+    border-left: 10px solid;
+    font-family: 'Outfit', 'Noto Sans Thai Looped', sans-serif;
+}
+
+.chatbox-container.normal {
     background: linear-gradient(45deg, rgba(78, 78, 72, 0.85), rgba(56, 52, 43, 0.85));
-    padding: .75em;
-    border-radius: 0 0 1em;
-    border-left: 10px solid;
-    font-family: 'Outfit', 'Noto Sans Thai Looped', sans-serif;
 }
 
-.chatbox-container-sub {
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
+.chatbox-container.sub {
     background: linear-gradient(45deg, rgba(138, 138, 11, 0.85), rgba(181, 137, 35, 0.85));
-    padding: .75em;
-    border-radius: 0 0 1em;
-    border-left: 10px solid;
-    font-family: 'Outfit', 'Noto Sans Thai Looped', sans-serif;
 }
 
-.chatbox-container-vip {
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
+.chatbox-container.vip {
     background: linear-gradient(45deg, rgba(50, 11, 77, 0.85), rgba(107, 19, 107, 0.85));
-    padding: .75em;
-    border-radius: 0 0 1em;
-    border-left: 10px solid;
-    font-family: 'Outfit', 'Noto Sans Thai Looped', sans-serif;
 }
 
-.chatbox-container-owner {
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
+.chatbox-container.owner {
     background: linear-gradient(45deg, rgba(77, 11, 11, 0.85), rgba(107, 19, 32, 0.85));
-    padding: .75em;
-    border-radius: 0 0 1em;
-    border-left: 10px solid;
-    font-family: 'Outfit', 'Noto Sans Thai Looped', sans-serif;
+}
+
+.chatbox-container.mod {
+    background: linear-gradient(45deg, rgba(12, 77, 11, 0.85), rgba(21, 116, 38, 0.85));
 }
 
 .meta {
