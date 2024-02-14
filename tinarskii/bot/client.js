@@ -251,6 +251,23 @@ async function createListener() {
     else if (message.startsWith('!help') || message.startsWith('!commands')) {
       await chatClient.say(channel, `ดูได้ที่ https://bot.tinarskii.com/commands`);
     }
+    else if (message.startsWith('!รัก') || message.startsWith('!love')) {
+      let lovePercent = Math.floor(Math.random() * 101);
+      await chatClient.say(channel, `${user} 💘 ${args[0] || user} ${lovePercent}%`);
+    }
+    else if (message.startsWith('!กระทืบ') || message.startsWith('!stomp')) {
+      let stompTimes = Math.floor(Math.random() * 1000);
+      await chatClient.say(channel, `${user} 👣 ${args[0] || user} ${stompTimes} ครั้ง`);
+    }
+    else if (message.startsWith('!กินไร') || message.startsWith('!eat')) {
+      let foods = ['ข้าว', 'ก๋วยเตี๋ยว', 'ส้มตำ', 'ไก่ทอด', 'ขนมจีน', 'สเต็ก', 'ไก่ย่าง', 'หมูกระทะ', 'หมูทอด', 'หมูสะเต๊ะ', 'หมูกรอบ', 'หมูย่าง', 'หมูทอดกรอบ', 'หมูสามชั้น', 'หมูสับ'];
+      let food = foods[Math.floor(Math.random() * foods.length)];
+      await chatClient.say(channel, `🍲 กิน ${food}`);
+    }
+    else if (message.startsWith('!เกลียด') || message.startsWith('!้hate')) {
+      let hatePercent = Math.floor(Math.random() * 101);
+      await chatClient.say(channel, `${user} ?? ${args[0] || user} ${hatePercent}%`);
+    }
   });
 }
 function initBank(userID) {
