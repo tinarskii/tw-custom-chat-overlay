@@ -1,4 +1,4 @@
-import { initBank } from "../client.js";
+import { db } from "../client.js";
 
 export default {
   name: "nickname",
