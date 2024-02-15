@@ -13,7 +13,12 @@ export default {
   ],
   execute: async (client, meta, message, args) => {
     let lovePercent = Math.floor(Math.random() * 101);
-    client.io.emit("feed", ({ type: "neutral", icon: "💘", message: `${meta.user} ➡ ${args[0] || meta.user}`, action: `${lovePercent}%` }));
+    client.io.emit("feed", {
+      type: "neutral",
+      icon: "💘",
+      message: `${meta.user} ➡ ${args[0] || meta.user}`,
+      action: `${lovePercent}%`,
+    });
     await client.chat.say(
       meta.channel,
       `${meta.user} 💘 ${args[0] || meta.user} ${lovePercent}%`,

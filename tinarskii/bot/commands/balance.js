@@ -30,11 +30,22 @@ export default {
 
     // If user is not found
     if (!balance) {
-      await client.chat.say(meta.channel, `ไม่มีบัญชีของ ${user.displayName} ในระบบ`);
+      await client.chat.say(
+        meta.channel,
+        `ไม่มีบัญชีของ ${user.displayName} ในระบบ`,
+      );
       return;
     }
 
-    client.io.emit("feed", ({ type: "normal", icon: "👛", message: `${meta.user}`, action: `${balance.money} KEEB` }));
-    await client.chat.say(meta.channel, `${user.displayName} มีตัง ${balance.money} กีบ`);
+    client.io.emit("feed", {
+      type: "normal",
+      icon: "👛",
+      message: `${meta.user}`,
+      action: `${balance.money} KEEB`,
+    });
+    await client.chat.say(
+      meta.channel,
+      `${user.displayName} มีตัง ${balance.money} กีบ`,
+    );
   },
 };

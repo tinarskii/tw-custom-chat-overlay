@@ -24,7 +24,10 @@ export default {
     let stmt = db.prepare("SELECT money FROM bot WHERE user = ?");
     let balance = stmt.get(meta.userID);
     if (amount > balance.money * 1.5) {
-      await client.chat.say(meta.channel, `เองมีตังไม่พอ (ต้องมีเงินเป็น 1.5 เท่าของจำนวนที่เดิม)`);
+      await client.chat.say(
+        meta.channel,
+        `เองมีตังไม่พอ (ต้องมีเงินเป็น 1.5 เท่าของจำนวนที่เดิม)`,
+      );
       return;
     }
 
@@ -38,7 +41,12 @@ export default {
         meta.channel,
         `ชนะ ${amount * 1.75} กีบ เหลือ ${balance.money + amount * 1.75} กีบ`,
       );
-      client.io.emit("feed", ({ type: "success", icon: "🎰", message: meta.user, action: `- ${amount * 1.75} KEEB` }));
+      client.io.emit("feed", {
+        type: "success",
+        icon: "🎰",
+        message: meta.user,
+        action: `- ${amount * 1.75} KEEB`,
+      });
     } else {
       // Loss amount * 1.5
       stmt = db.prepare("UPDATE bot SET money = money - ? WHERE user = ?");
@@ -47,7 +55,12 @@ export default {
         meta.channel,
         `แพ้ ${amount * 1.5} กีบ เหลือ ${balance.money - amount * 1.5} กีบ`,
       );
-      client.io.emit("feed", ({ type: "danger", icon: "🎰", message: meta.user, action: `- ${amount * 1.5} KEEB` }));
+      client.io.emit("feed", {
+        type: "danger",
+        icon: "🎰",
+        message: meta.user,
+        action: `- ${amount * 1.5} KEEB`,
+      });
     }
   },
 };

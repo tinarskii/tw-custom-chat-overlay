@@ -32,7 +32,12 @@ export default {
     stmt = db.prepare("UPDATE bot SET lastWeekly = ? WHERE user = ?");
     stmt.run(Number(new Date()), meta.userID);
 
-    client.io.emit("feed", ({ type: "normal", icon: "☀️", message: `System ➡ ${meta.user}`, action: `+ 500 KEEB` }));
+    client.io.emit("feed", {
+      type: "normal",
+      icon: "☀️",
+      message: `System ➡ ${meta.user}`,
+      action: `+ 500 KEEB`,
+    });
     await client.chat.say(meta.channel, `รับ 500 กีบ`);
   },
 };

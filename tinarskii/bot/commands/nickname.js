@@ -52,6 +52,11 @@ export default {
     let stmt = db.prepare("UPDATE bot SET nickname = ? WHERE user = ?");
     stmt.run(name, meta.userID);
     await client.chat.say(meta.channel, `เปลี่ยนชื่อเป็น ${name}`);
-    client.io.emit("feed", ({ type: "normal", icon: "✍️", message: `${meta.user} (${name})`, action: `Rename` }));
+    client.io.emit("feed", {
+      type: "normal",
+      icon: "✍️",
+      message: `${meta.user} (${name})`,
+      action: `Rename`,
+    });
   },
 };

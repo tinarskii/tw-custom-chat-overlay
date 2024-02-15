@@ -7,8 +7,8 @@ import express from "express";
 import { readdirSync } from "fs";
 import { Server } from "socket.io";
 import { createServer } from "http";
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 
 export const db = new Database("user.db");
 db.pragma("journal_mode = WAL");
@@ -48,23 +48,23 @@ app.get("/api/commands", (req, res) => {
   }
   res.send(commandList);
 });
-app.get('/', (req, res) => {
-  res.sendFile(join(__dirname, '/app/feed.html'));
+app.get("/", (req, res) => {
+  res.sendFile(join(__dirname, "/app/feed.html"));
 });
-app.get('/socket.io/socket.io.js', (req, res) => {
-  res.sendFile(__dirname + '/node_modules/socket.io/client-dist/socket.io.js');
+app.get("/socket.io/socket.io.js", (req, res) => {
+  res.sendFile(__dirname + "/node_modules/socket.io/client-dist/socket.io.js");
 });
 server.listen(process.env.PORT ?? 8080, () => {
   console.log(
     `[Tx-API] Listening http://localhost:${process.env.PORT ?? 8080}`,
   );
 });
-io.on('connection', (socket) => {
-  console.log('[Tx-SocketIO] A user connected');
+io.on("connection", (socket) => {
+  console.log("[Tx-SocketIO] A user connected");
   socket.on("connect_error", (err) => {
     console.log(`connect_error due to ${err.message}`);
   });
-})
+});
 
 async function refreshToken() {
   console.log(`[Tx] Renewing Access Token`);

@@ -33,6 +33,11 @@ export default {
     stmt.run(Number(new Date()), meta.userID);
 
     await client.chat.say(meta.channel, `รับ 100 กีบ`);
-    client.io.emit("feed", ({ type: "normal", icon: "☀️", message: `System ➡ ${meta.user}`, action: `+ 100 KEEB` }));
+    client.io.emit("feed", {
+      type: "normal",
+      icon: "☀️",
+      message: `System ➡ ${meta.user}`,
+      action: `+ 100 KEEB`,
+    });
   },
 };

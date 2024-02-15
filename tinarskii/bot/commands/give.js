@@ -35,13 +35,13 @@ export default {
     }
 
     // Check if target is valid
-    let targetUser = (await client.api.users.getUserByName(target))
+    let targetUser = await client.api.users.getUserByName(target);
     if (!targetUser) {
       await client.chat.say(meta.channel, `ไม่พบผู้ใช้ ${args[0]}`);
       return;
     }
     let targetID = targetUser.id;
-    initBank(targetID)
+    initBank(targetID);
 
     // Transfer money
     stmt = db.prepare("UPDATE bot SET money = money - ? WHERE user = ?");
@@ -49,6 +49,11 @@ export default {
     stmt = db.prepare("UPDATE bot SET money = money + ? WHERE user = ?");
     stmt.run(amount, targetID);
     await client.chat.say(meta.channel, `โอน ${amount} กีบ ให้ ${target}`);
-    client.io.emit("feed", ({ type: "normal", icon: "📩", message: `${meta.user} ➡ ${target}`, action: `${amount} KEEB` }));
+    client.io.emit("feed", {
+      type: "normal",
+      icon: "📩",
+      message: `${meta.user} ➡ ${target}`,
+      action: `${amount} KEEB`,
+    });
   },
 };
