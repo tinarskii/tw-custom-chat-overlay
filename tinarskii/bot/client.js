@@ -129,6 +129,7 @@ async function createListener() {
       "chat:read",
       "chat:edit",
       "channel:moderate",
+      "moderation:read"
     ],
   );
   const apiClient = new ApiClient({ authProvider });
@@ -161,6 +162,14 @@ async function createListener() {
         }
       }
       let command = commands.get(commandName);
+      if (command.modsOnly) {
+        let channel = (await apiClient.channels.getchannelinfo(channel)).id;
+        let mods = await apiClient.moderation.checkUserMod(channel, userID);
+        if (!mods) {
+          await chatClient.say(channel, `คุณไม่มีสิทธิ์ในการเปลี่ยนเกม`);
+          return;
+        }
+      }
       if (command) {
         command.execute(
           { chat: chatClient, api: apiClient, io },
