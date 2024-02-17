@@ -29,6 +29,10 @@ export default {
     // Check if user has enough money
     let stmt = db.prepare("SELECT money FROM bot WHERE user = ?");
     let balance = stmt.get(meta.userID);
+    if (!stmt.get(meta.userID)) {
+        initBank(meta.userID);
+        balance = { money: 0 };
+    }
     if (amount > balance.money) {
       await client.chat.say(meta.channel, `เองมีตังไม่พอ`);
       return;

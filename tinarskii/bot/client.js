@@ -9,11 +9,21 @@ import { Server } from "socket.io";
 import { createServer } from "http";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
+import pino from "pino"
+import pretty from "pino-pretty"
 
 export const db = new Database("user.db");
 db.pragma("journal_mode = WAL");
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const logger = pino({
+    prettyPrint: {
+        levelFirst: true,
+        ignore: 'pid,hostname'
+    },
+    prettifier: pretty
+});
+
 let commands = new Map();
 let prefix = "!";
 
@@ -55,19 +65,19 @@ app.get("/socket.io/socket.io.js", (req, res) => {
   res.sendFile(__dirname + "/node_modules/socket.io/client-dist/socket.io.js");
 });
 server.listen(process.env.PORT ?? 8080, () => {
-  console.log(
-    `[Tx-API] Listening http://localhost:${process.env.PORT ?? 8080}`,
+  logger.info(
+    `[WebServer] Listening http://localhost:${process.env.PORT ?? 8080}`,
   );
 });
 io.on("connection", (socket) => {
-  console.log("[Tx-SocketIO] A user connected");
+  logger.info(`[Socket.IO] User connected`);
   socket.on("connect_error", (err) => {
-    console.log(`connect_error due to ${err.message}`);
+    logger.error(`[Socket.IO] ${err.message}`);
   });
 });
 
 async function refreshToken() {
-  console.log(`[Tx] Renewing Access Token`);
+  logger.info(`[Tx] Renewing Access Token`);
   let headers = new Headers();
   headers.append(`Content-Type`, `application/json`);
   let body = {
