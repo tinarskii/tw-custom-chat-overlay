@@ -125,7 +125,12 @@ async function isTwitchTokenValid(token) {
 async function initializeSequence() {
   await refreshToken();
   if (await isTwitchTokenValid(process.env.USER_ACCESS_TOKEN)) {
-    await createListener();
+    try {
+      await createListener();
+    } catch (error) {
+      logger.error(`[Tx] Critical Error!`);
+      logger.error(error);
+    }
   } else {
     logger.error(`[Tx] Initializing Failed`);
     throw new Error();
@@ -178,7 +183,7 @@ async function createListener() {
         }
       }
       let command = commands.get(commandName);
-      if (command.modsOnly) {
+      if (command?.modsOnly) {
         let channelID = (await apiClient.users.getUserByName(channel)).id;
         let mods = await apiClient.moderation.checkUserMod(channelID, userID);
         if (!mods && userID !== channelID) {
