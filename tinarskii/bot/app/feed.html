@@ -56,7 +56,6 @@
     <script>
       const socket = io();
       socket.on("feed", (data) => {
-        console.log(data);
         const feedlist = document.querySelector(".feedlist");
         const feed = document.createElement("div");
         feed.classList.add("feed-container", data.type);

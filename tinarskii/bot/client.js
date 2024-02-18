@@ -4,24 +4,24 @@ import { ChatClient } from "@twurple/chat";
 import { ApiClient } from "@twurple/api";
 import Database from "better-sqlite3";
 import express from "express";
-import { readdirSync } from "fs";
 import { Server } from "socket.io";
+import pino from "pino";
+import { readdirSync } from "fs";
 import { createServer } from "http";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
-import pino from "pino"
-import pretty from "pino-pretty"
 
 export const db = new Database("user.db");
 db.pragma("journal_mode = WAL");
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const logger = pino({
-    prettyPrint: {
-        levelFirst: true,
-        ignore: 'pid,hostname'
+  transport: {
+    target: "pino-pretty",
+    options: {
+      colorize: true,
     },
-    prettifier: pretty
+  },
 });
 
 let commands = new Map();
@@ -32,9 +32,9 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server);
 
-// app.get("/", (req, res) => {
-//   res.send("Hello World!");
-// });
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
 app.get("/api/nickname", (req, res) => {
   let userID = req.query.userID;
   let stmt = db.prepare("SELECT nickname FROM bot WHERE user = ?");
@@ -58,8 +58,11 @@ app.get("/api/commands", (req, res) => {
   }
   res.send(commandList);
 });
-app.get("/", (req, res) => {
+app.get("/feed", (req, res) => {
   res.sendFile(join(__dirname, "/app/feed.html"));
+});
+app.get("/s", (req, res) => {
+  res.sendFile(join(__dirname, "/app/s.html"));
 });
 app.get("/socket.io/socket.io.js", (req, res) => {
   res.sendFile(__dirname + "/node_modules/socket.io/client-dist/socket.io.js");
@@ -115,7 +118,7 @@ async function isTwitchTokenValid(token) {
     redirect: "follow",
   });
   let valid = response.status === 200;
-  console.log(`[Tx-ValidatedToken] ${valid}`);
+  logger.info(`[Tx-ValidatedToken] ${valid}`);
   return valid;
 }
 
@@ -124,7 +127,7 @@ async function initializeSequence() {
   if (await isTwitchTokenValid(process.env.USER_ACCESS_TOKEN)) {
     await createListener();
   } else {
-    console.log(`[Tx] Initializing Failed`);
+    logger.error(`[Tx] Initializing Failed`);
     throw new Error();
   }
 }
@@ -139,7 +142,11 @@ async function createListener() {
       "chat:read",
       "chat:edit",
       "channel:moderate",
-    ],
+      "moderation:read",
+      "moderator:manage:shoutouts",
+      "channel:manage:moderators",
+      "channel:manage:broadcast"
+    ]
   );
   const apiClient = new ApiClient({ authProvider });
   const chatClient = new ChatClient({ authProvider, channels: ["tinarskii"] });
@@ -153,9 +160,9 @@ async function createListener() {
     for (let file of commandFiles) {
       let command = (await import(`./commands/${file}`)).default;
       commands.set(command.name, command);
-      console.log(`[Tx] Loaded command: ${command.name}`);
+      logger.info(`[Tx] Loaded command: ${command.name}`);
     }
-    console.log("[Tx] Connected to chat");
+    logger.info("[Tx] Connected to chat");
   });
 
   chatClient.onMessage(async (channel, user, message) => {
@@ -171,13 +178,32 @@ async function createListener() {
         }
       }
       let command = commands.get(commandName);
-      if (command) {
-        command.execute(
-          { chat: chatClient, api: apiClient, io },
-          { channel, user, userID, commands },
-          message,
-          args,
+      if (command.modsOnly) {
+        let channelID = (await apiClient.users.getUserByName(channel)).id;
+        let mods = await apiClient.moderation.checkUserMod(channelID, userID);
+        if (!mods && userID !== channelID) {
+          await chatClient.say(channel, `แกไม่มีสิทธิ!!!!!!!!!!!!`);
+          return;
+        }
+      }
+      if (args.length < command.args.length) {
+        await chatClient.say(
+          channel,
+          `ใส่อาร์กิวเมนต์ไม่ครบ! ขาด ${command.args[args.length].name}!`,
         );
+        return;
+      }
+      if (command) {
+        try {
+          command.execute(
+            { chat: chatClient, api: apiClient, io },
+            { channel, user, userID, commands },
+            message,
+            args,
+          );
+        } catch (error) {
+          await chatClient.say(channel, "มึงทำบอตพัง");
+        }
       }
     }
   });
