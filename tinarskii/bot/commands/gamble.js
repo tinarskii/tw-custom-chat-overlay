@@ -16,17 +16,17 @@ export default {
 
     // Check if amount is valid
     if (isNaN(amount) || amount < 0) {
-      await client.chat.say(meta.channel, `ใส่ตังเข้ามาด้วย`);
+      await client.chat.say(meta.channel, `ขอใส่จำนวนนับนะครับ`);
       return;
     }
 
     // Check if user has enough money
     let stmt = db.prepare("SELECT money FROM bot WHERE user = ?");
     let balance = stmt.get(meta.userID);
-    if (amount > balance.money * 1.5) {
+    if (amount > balance.money) {
       await client.chat.say(
         meta.channel,
-        `เองมีตังไม่พอ (ต้องมีเงินเป็น 1.5 เท่าของจำนวนที่เดิม)`,
+        `เองมีตังไม่พอ`,
       );
       return;
     }
@@ -45,15 +45,14 @@ export default {
         type: "success",
         icon: "🎰",
         message: meta.user,
-        action: `- ${amount * 1.75} KEEB`,
+        action: `+ ${amount * 1.75} KEEB`,
       });
     } else {
-      // Loss amount * 1.5
       stmt = db.prepare("UPDATE bot SET money = money - ? WHERE user = ?");
-      stmt.run(amount * 1.5, meta.userID);
+      stmt.run(amount, meta.userID);
       await client.chat.say(
         meta.channel,
-        `แพ้ ${amount * 1.5} กีบ เหลือ ${balance.money - amount * 1.5} กีบ`,
+        `แพ้ ${amount} กีบ เหลือ ${balance.money - amount} กีบ`,
       );
       client.io.emit("feed", {
         type: "danger",
