@@ -193,7 +193,7 @@ async function createListener() {
       }
       if (command.args.length > args.length) {
         let requiredArgs = command.args.filter((arg) => arg.required);
-        if (requiredArgs.length === 0) return;
+        if (!requiredArgs) return;
         let requiredArgsString = requiredArgs.map((arg) => arg.name).join(", ");
         await chatClient.say(
           channel,
