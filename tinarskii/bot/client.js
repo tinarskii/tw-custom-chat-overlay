@@ -193,13 +193,14 @@ async function createListener() {
       }
       if (command.args.length > args.length) {
         let requiredArgs = command.args.filter((arg) => arg.required);
-        if (!requiredArgs) return;
-        let requiredArgsString = requiredArgs.map((arg) => arg.name).join(", ");
-        await chatClient.say(
-          channel,
-          `ใส่อาร์กิวเมนต์ให้ครบ ต้องการ: ${requiredArgsString}`,
-        );
-        return;
+        if (requiredArgs.length) {
+          let requiredArgsString = requiredArgs.map((arg) => arg.name).join(", ");
+          await chatClient.say(
+            channel,
+            `ใส่อาร์กิวเมนต์ให้ครบ ต้องการ: ${requiredArgsString}`,
+          );
+          return;
+        }
       }
       if (command) {
         try {
